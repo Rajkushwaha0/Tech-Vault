@@ -774,9 +774,164 @@
       font-size: 48px;
       opacity: 0.7;
     }
+
+    /* ==========================================================================
+       RESPONSIVE & MOBILE / TABLET OPTIMIZATIONS
+       ========================================================================== */
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      z-index: 40;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+      cursor: pointer;
+    }
+
+    .sidebar-overlay.active {
+      display: block;
+      opacity: 1;
+    }
+
+    .mobile-menu-btn {
+      display: none;
+    }
+
+    .sidebar-close-btn {
+      display: none;
+    }
+
+    /* Tablet & Small Desktop */
+    @media (max-width: 1024px) {
+      .mobile-menu-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-weight: 600;
+      }
+
+      .sidebar-close-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 28px;
+        height: 28px;
+        font-size: 13px;
+        padding: 0;
+      }
+
+      #sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 320px;
+        max-width: 85vw;
+        z-index: 50;
+        transform: translateX(-100%);
+        transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: none;
+      }
+
+      #sidebar.open {
+        transform: translateX(0);
+        box-shadow: 4px 0 28px rgba(0, 0, 0, 0.45);
+      }
+
+      .top-bar {
+        padding: 0 16px;
+      }
+
+      .article-scroll-container {
+        padding: 24px 20px 60px 20px;
+      }
+    }
+
+    /* Mobile Phones */
+    @media (max-width: 640px) {
+      :root {
+        --header-height: 52px;
+      }
+
+      .top-bar {
+        padding: 0 12px;
+        gap: 8px;
+      }
+
+      .top-actions {
+        gap: 6px;
+      }
+
+      .top-btn {
+        padding: 5px 8px;
+        font-size: 11px;
+      }
+
+      .btn-text-full {
+        display: none;
+      }
+
+      .breadcrumb {
+        font-size: 11.5px;
+        max-width: 120px;
+      }
+
+      .article-scroll-container {
+        padding: 16px 12px 60px 12px;
+      }
+
+      .markdown-body {
+        font-size: 14px;
+        line-height: 1.65;
+      }
+
+      .markdown-body h1 {
+        font-size: 21px;
+        margin: 20px 0 12px 0;
+      }
+
+      .markdown-body h2 {
+        font-size: 17.5px;
+        margin: 24px 0 10px 0;
+      }
+
+      .markdown-body h3 {
+        font-size: 15px;
+        margin: 18px 0 8px 0;
+      }
+
+      .doc-meta-banner {
+        padding: 12px 14px;
+        margin-bottom: 20px;
+      }
+
+      .doc-meta-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+      }
+
+      .code-block-header {
+        padding: 4px 10px;
+      }
+
+      .markdown-body pre {
+        padding: 12px;
+      }
+
+      .markdown-body pre code {
+        font-size: 12px;
+      }
+    }
   </style>
 </head>
 <body>
+
+  <!-- BACKDROP OVERLAY FOR MOBILE & TABLET -->
+  <div id="sidebarOverlay" class="sidebar-overlay"></div>
 
   <!-- LEFT SIDEBAR -->
   <aside id="sidebar">
@@ -788,9 +943,14 @@
           <p>Personal Learning Hub</p>
         </div>
       </div>
-      <button class="action-btn" id="refreshBtn" title="Reload Directory Tree">
-        🔄
-      </button>
+      <div style="display: flex; align-items: center; gap: 6px;">
+        <button class="action-btn" id="refreshBtn" title="Reload Directory Tree">
+          🔄
+        </button>
+        <button class="action-btn sidebar-close-btn" id="closeSidebarBtn" title="Close Sidebar">
+          ✕
+        </button>
+      </div>
     </div>
 
     <!-- Search Input -->
@@ -822,21 +982,26 @@
   <main id="mainContent">
     <!-- Top Header Bar -->
     <header class="top-bar">
-      <div class="breadcrumb" id="breadcrumbNav">
-        <span>Knowledge Vault</span>
-        <span>/</span>
-        <span class="current">Select a topic</span>
+      <div style="display: flex; align-items: center; gap: 10px; overflow: hidden;">
+        <button class="top-btn mobile-menu-btn" id="mobileMenuBtn" title="Open Navigation Menu">
+          ☰ <span class="btn-text-full">Topics</span>
+        </button>
+        <div class="breadcrumb" id="breadcrumbNav">
+          <span>Vault</span>
+          <span>/</span>
+          <span class="current">Select a topic</span>
+        </div>
       </div>
 
       <div class="top-actions">
         <button class="top-btn" id="themeToggleBtn" title="Toggle Light / Dark Mode">
-          ☀️ Light
+          ☀️ <span class="btn-text-full">Light</span>
         </button>
         <button class="top-btn" id="copyPathBtn" title="Copy relative path">
-          📋 Copy Path
+          📋 <span class="btn-text-full">Copy Path</span>
         </button>
         <button class="top-btn" id="rawToggleBtn" title="Toggle Raw / Rendered">
-          📄 Raw
+          📄 <span class="btn-text-full">Raw</span>
         </button>
       </div>
     </header>
@@ -1071,6 +1236,9 @@
     // Load and render file
     async function loadFile(relPath) {
       currentFile = relPath;
+      if (window.innerWidth <= 1024 && typeof closeSidebar === 'function') {
+        closeSidebar();
+      }
       const articleWrapper = document.getElementById('articleWrapper');
       const breadcrumbNav = document.getElementById('breadcrumbNav');
 
@@ -1213,6 +1381,40 @@
       }
     });
 
+    // Sidebar Drawer Management for Mobile / Tablet
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const closeSidebarBtn = document.getElementById('closeSidebarBtn');
+
+    function openSidebar() {
+      sidebar.classList.add('open');
+      overlay.classList.add('active');
+    }
+
+    function closeSidebar() {
+      sidebar.classList.remove('open');
+      overlay.classList.remove('active');
+    }
+
+    function toggleSidebar() {
+      if (sidebar.classList.contains('open')) {
+        closeSidebar();
+      } else {
+        openSidebar();
+      }
+    }
+
+    if (mobileMenuBtn) mobileMenuBtn.addEventListener('click', toggleSidebar);
+    if (closeSidebarBtn) closeSidebarBtn.addEventListener('click', closeSidebar);
+    if (overlay) overlay.addEventListener('click', closeSidebar);
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && sidebar.classList.contains('open')) {
+        closeSidebar();
+      }
+    });
+
     // Event Listeners
     document.getElementById('themeToggleBtn').addEventListener('click', toggleTheme);
 
@@ -1234,8 +1436,8 @@
       if (currentFile) {
         navigator.clipboard.writeText(currentFile).then(() => {
           const btn = document.getElementById('copyPathBtn');
-          btn.textContent = '✓ Copied!';
-          setTimeout(() => btn.textContent = '📋 Copy Path', 1500);
+          btn.innerHTML = '✓ <span class="btn-text-full">Copied!</span>';
+          setTimeout(() => btn.innerHTML = '📋 <span class="btn-text-full">Copy Path</span>', 1500);
         });
       }
     });
@@ -1243,7 +1445,9 @@
     document.getElementById('rawToggleBtn').addEventListener('click', () => {
       if (!currentFile) return;
       isRawView = !isRawView;
-      document.getElementById('rawToggleBtn').textContent = isRawView ? '👁️ Rendered' : '📄 Raw';
+      document.getElementById('rawToggleBtn').innerHTML = isRawView 
+        ? '👁️ <span class="btn-text-full">Rendered</span>' 
+        : '📄 <span class="btn-text-full">Raw</span>';
       renderContent({
         path: currentFile,
         name: currentFile.split('/').pop(),
