@@ -1,0 +1,13 @@
+{
+  "name": "tech-lead-vault-viewer",
+  "version": "1.0.0",
+  "description": "Interactive Markdown & Code Learning Dashboard for Tech Lead Vault",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": ["markdown", "viewer", "learn", "tech-lead"],
+  "author": "",
+  "license": "MIT"
+}

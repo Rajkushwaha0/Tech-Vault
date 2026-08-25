@@ -1,0 +1,9 @@
+{
+  "name": "tech-lead-vault",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "node viewer/server.js",
+    "start": "node viewer/server.js"
+  }
+}
