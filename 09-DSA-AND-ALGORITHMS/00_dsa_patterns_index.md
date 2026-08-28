@@ -6,10 +6,12 @@ A structured reference of the top 20 algorithmic patterns tested in Senior / Tec
 
 | # | Pattern Name | Key Trigger Clues | Typical Data Structures | Time Complexity Target |
 | :- | :--- | :--- | :--- | :--- |
-| **01** | **Sliding Window** | Contiguous subarrays/substrings, "longest/shortest subarray with sum K" | Array, String, Hash Map | $O(N)$ |
-| **02** | **Two Pointers (Converging)** | Sorted array, pairs matching a target, palindrome check | Array, Two index pointers | $O(N)$ |
+| **01** | **Sliding Window** | Contiguous subarrays/substrings, "longest/shortest subarray with sum K" (**strictly non-negative/monotonic**) | Array, String, Hash Map | $O(N)$ |
+| **02** | **Two Pointers (Converging)** | Sorted array, pairs matching a target, palindrome check, container with most water | Array, Two index pointers | $O(N)$ |
 | **03** | **Fast & Slow Pointers** | Cycle detection, linked list midpoint, happy numbers | Linked List, Cyclic arrays | $O(N)$ |
-| **04** | **Prefix Sum + Hash Map** | Subarray sum equals K, count of subarrays with property | Array, Hash Map | $O(N)$ |
+| **04** | **Prefix Sum + Hash Map** | Subarray sum equals K (with **negative numbers**), count of subarrays with sum % K == 0, Range Sum queries | Array, Hash Map | $O(N)$ |
+| **04b** | **Prefix + Suffix (Two Passes)** | Product of array except self, Trapping Rain Water, Find Pivot Index (needs left and right context) | Two auxiliary arrays or running variables | $O(N)$ |
+| **04c** | **Kadane's Algorithm (DP)** | **Maximum/Minimum sum** contiguous subarray (resets running sum to 0 when negative) | Running sum, Max sum variables | $O(N)$ |
 | **05** | **Monotonic Stack / Queue** | Next greater/smaller element, daily temperatures, stock span, sliding window maximum | Stack, Deque | $O(N)$ |
 | **06** | **Top 'K' Elements (Heaps)** | Kth largest/smallest, Top K frequent, stream of data | Min-Heap / Max-Heap | $O(N \log K)$ |
 | **07** | **Two Heaps Pattern** | Find median from data stream, sliding window median | Min-Heap + Max-Heap | $O(\log N)$ insert |

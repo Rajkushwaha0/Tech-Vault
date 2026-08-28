@@ -11,6 +11,8 @@ This track contains all structured topic breakdowns, pattern analysis guides, an
 
 ### 📁 01-sliding-window/
 * [PROBLEM_01_2026-08-25_minimum_size_subarray_sum.md](file:///Users/flixstock/Desktop/personal%20project/learn/09-DSA-AND-ALGORITHMS/01-sliding-window/PROBLEM_01_2026-08-25_minimum_size_subarray_sum.md) — Minimum Size Subarray Sum (Variable Window, Incremental Shrinkage, $O(N)$).
+* [PROBLEM_02_2026-08-29_max_consecutive_ones_iii_qos_buffer.md](file:///Users/flixstock/Desktop/personal%20project/learn/09-DSA-AND-ALGORITHMS/01-sliding-window/PROBLEM_02_2026-08-29_max_consecutive_ones_iii_qos_buffer.md) — Max Consecutive Ones III / QoS Buffer (Variable Window Maximizing, Zero Budget Counter, $O(N)$ Time, $O(1)$ Space).
+
 
 ### 📁 08-binary-search/
 * [PROBLEM_01_2026-08-25_search_in_rotated_sorted_array.md](file:///Users/flixstock/Desktop/personal%20project/learn/09-DSA-AND-ALGORITHMS/08-binary-search/PROBLEM_01_2026-08-25_search_in_rotated_sorted_array.md) — Search in Rotated Sorted Array (Modified Binary Search, Sorted Half Invariant, $O(\log N)$).
