@@ -7,7 +7,18 @@ const ROOT_DIR = path.resolve(__dirname, '..');
 const PUBLIC_DIR = path.join(__dirname, 'public');
 
 // Excluded directories and files
-const IGNORED_NAMES = new Set(['.git', '.DS_Store', 'node_modules', 'viewer', '.gemini']);
+const IGNORED_EXACT = new Set([
+  '.git', '.ds_store', 'node_modules', 'viewer', '.gemini', 'gemini', '.agents', 'agents', 'aagents',
+  '00-meta', 'meta', '00_meta', 'scratch', '.scratch',
+  'package.json', 'package-lock.json', 'agents.md', 'gemini.md'
+]);
+
+function isIgnored(name) {
+  const lower = name.toLowerCase();
+  if (IGNORED_EXACT.has(lower) || lower.startsWith('.')) return true;
+  if (lower === 'readme.md' || lower === 'readme' || lower.startsWith('readme.')) return true;
+  return false;
+}
 
 /**
  * Recursively scans directory and builds a clean tree structure
@@ -30,7 +41,7 @@ function buildTree(dirPath, relativePath = '') {
   const children = [];
 
   for (const entry of entries) {
-    if (IGNORED_NAMES.has(entry.name) || entry.name.startsWith('.')) {
+    if (isIgnored(entry.name)) {
       continue;
     }
 
@@ -39,12 +50,14 @@ function buildTree(dirPath, relativePath = '') {
 
     if (entry.isDirectory()) {
       const subTree = buildTree(fullPath, relItemPath);
-      children.push({
-        type: 'directory',
-        name: entry.name,
-        path: relItemPath,
-        children: subTree || []
-      });
+      if (subTree && subTree.length > 0) {
+        children.push({
+          type: 'directory',
+          name: entry.name,
+          path: relItemPath,
+          children: subTree
+        });
+      }
     } else if (entry.isFile()) {
       const ext = path.extname(entry.name).toLowerCase();
       let stats;

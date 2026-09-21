@@ -1094,13 +1094,49 @@
       }
     });
 
+    const IGNORED_NAMES = new Set([
+      '.git', '.ds_store', 'node_modules', 'viewer', '.gemini', 'gemini', '.agents', 'agents', 'aagents',
+      '00-meta', 'meta', '00_meta', 'scratch', '.scratch',
+      'package.json', 'package-lock.json', 'agents.md', 'gemini.md'
+    ]);
+
+    function shouldIgnoreItem(item) {
+      if (!item || !item.name) return true;
+      const name = item.name.toLowerCase();
+      const path = (item.path || '').toLowerCase();
+      if (IGNORED_NAMES.has(name) || name.startsWith('.')) return true;
+      if (name === 'readme.md' || name === 'readme' || name.startsWith('readme.')) return true;
+      if (path.startsWith('00-meta') || path.startsWith('meta') || path.startsWith('viewer') || path.startsWith('.agents') || path.startsWith('agents') || path.startsWith('.gemini') || path.startsWith('gemini') || path.startsWith('scratch')) return true;
+      return false;
+    }
+
+    function filterTree(nodes) {
+      if (!nodes || !Array.isArray(nodes)) return [];
+      const result = [];
+      for (const node of nodes) {
+        if (shouldIgnoreItem(node)) continue;
+        if (node.type === 'directory') {
+          const filteredChildren = filterTree(node.children || []);
+          if (filteredChildren.length > 0) {
+            result.push({
+              ...node,
+              children: filteredChildren
+            });
+          }
+        } else {
+          result.push(node);
+        }
+      }
+      return result;
+    }
+
     // Fetch and render directory tree
     async function loadTree() {
       try {
         const res = await fetch('/api/tree');
         const data = await res.json();
         if (data.success) {
-          fullTree = data.tree;
+          fullTree = filterTree(data.tree);
           renderTree(fullTree);
 
           // Auto-select first document if available
