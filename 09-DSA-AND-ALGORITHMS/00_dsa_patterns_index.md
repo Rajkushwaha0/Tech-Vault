@@ -1,3 +1,16 @@
+---
+title: "Master 20+ Algorithmic Patterns Index"
+category: "DSA"
+sub_category: "Patterns Index"
+type: "index"
+tags:
+  - "dsa"
+  - "patterns-index"
+  - "algorithms"
+  - "mental-models"
+updated: "2026-09-21"
+---
+
 # 🗺️ MASTER DSA PATTERNS INDEX
 
 A structured reference of the top 20 algorithmic patterns tested in Senior / Tech Lead level technical interviews.

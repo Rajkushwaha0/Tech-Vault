@@ -20,6 +20,53 @@ function isIgnored(name) {
   return false;
 }
 
+function parseFrontmatter(filePath) {
+  let fd = null;
+  try {
+    fd = fs.openSync(filePath, 'r');
+    const buf = Buffer.alloc(2048);
+    const bytesRead = fs.readSync(fd, buf, 0, 2048, 0);
+    fs.closeSync(fd);
+    fd = null;
+
+    const content = buf.toString('utf8', 0, bytesRead);
+    if (!content.startsWith('---')) return { title: null, tags: [], category: null, sub_category: null, type: null };
+    const endIdx = content.indexOf('---', 3);
+    if (endIdx === -1) return { title: null, tags: [], category: null, sub_category: null, type: null };
+    
+    const header = content.substring(3, endIdx);
+    const titleMatch = header.match(/title:\s*["']?([^"'\n\r]+)["']?/);
+    const categoryMatch = header.match(/category:\s*["']?([^"'\n\r]+)["']?/);
+    const subCatMatch = header.match(/sub_category:\s*["']?([^"'\n\r]+)["']?/);
+    const typeMatch = header.match(/type:\s*["']?([^"'\n\r]+)["']?/);
+    
+    const tags = [];
+    const tagsSection = header.match(/tags:\s*\n((?:\s*-\s*[^\n\r]+\n?)+)/);
+    if (tagsSection && tagsSection[1]) {
+      const lines = tagsSection[1].split('\n');
+      for (const line of lines) {
+        const tagMatch = line.match(/^\s*-\s*["']?([^"'\n\r]+)["']?/);
+        if (tagMatch && tagMatch[1]) {
+          tags.push(tagMatch[1].trim());
+        }
+      }
+    }
+
+    return {
+      title: titleMatch ? titleMatch[1].trim() : null,
+      category: categoryMatch ? categoryMatch[1].trim() : null,
+      sub_category: subCatMatch ? subCatMatch[1].trim() : null,
+      type: typeMatch ? typeMatch[1].trim() : null,
+      tags
+    };
+  } catch (e) {
+    if (fd !== null) {
+      try { fs.closeSync(fd); } catch (_) {}
+    }
+    return { title: null, tags: [], category: null, sub_category: null, type: null };
+  }
+}
+
 /**
  * Recursively scans directory and builds a clean tree structure
  */
@@ -67,9 +114,16 @@ function buildTree(dirPath, relativePath = '') {
         stats = { size: 0, mtime: new Date() };
       }
 
+      const meta = ext === '.md' || ext === '.markdown' ? parseFrontmatter(fullPath) : null;
+
       children.push({
         type: 'file',
         name: entry.name,
+        title: meta && meta.title ? meta.title : null,
+        category: meta && meta.category ? meta.category : null,
+        sub_category: meta && meta.sub_category ? meta.sub_category : null,
+        tags: meta && meta.tags ? meta.tags : [],
+        docType: meta && meta.type ? meta.type : null,
         extension: ext.replace('.', ''),
         path: relItemPath,
         size: stats.size,
@@ -79,6 +133,20 @@ function buildTree(dirPath, relativePath = '') {
   }
 
   return children;
+}
+
+// In-Memory Tree Cache with 3s TTL (Fast in-memory reads, auto-refreshes on updates)
+let cachedTree = null;
+let lastCacheTime = 0;
+const CACHE_TTL_MS = 3000;
+
+function getCachedTree(forceRefresh = false) {
+  const now = Date.now();
+  if (!cachedTree || forceRefresh || (now - lastCacheTime > CACHE_TTL_MS)) {
+    cachedTree = buildTree(ROOT_DIR);
+    lastCacheTime = now;
+  }
+  return cachedTree;
 }
 
 const MIME_TYPES = {
@@ -109,7 +177,8 @@ const server = http.createServer((req, res) => {
   // API 1: Directory Tree
   if (pathname === '/api/tree') {
     try {
-      const tree = buildTree(ROOT_DIR);
+      const forceRefresh = urlObj.searchParams.has('refresh');
+      const tree = getCachedTree(forceRefresh);
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ success: true, tree, root: ROOT_DIR }));
     } catch (err) {
@@ -144,13 +213,17 @@ const server = http.createServer((req, res) => {
 
       const content = fs.readFileSync(safePath, 'utf8');
       const stats = fs.statSync(safePath);
+      const ext = path.extname(safePath).toLowerCase();
+
+      const meta = ext === '.md' || ext === '.markdown' ? parseFrontmatter(safePath) : null;
 
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({
         success: true,
         path: targetRelPath,
         name: path.basename(safePath),
-        extension: path.extname(safePath).replace('.', '').toLowerCase(),
+        extension: ext.replace('.', ''),
+        metadata: meta,
         content,
         size: stats.size,
         mtime: stats.mtime
