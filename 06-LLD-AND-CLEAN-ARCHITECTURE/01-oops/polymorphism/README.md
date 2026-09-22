@@ -15,6 +15,11 @@ This module covers the elimination of procedural conditional trees, dynamic poly
    - Interface Segregation Principle (ISP) vs Fat God Interfaces.
    - Strategy + Registry Pattern for $O(1)$ Strategy Resolution.
 
+2. [02_production_drill_multi_carrier_logistics_polymorphic_registry.md](file:///Users/flixstock/Desktop/personal%20project/learn/06-LLD-AND-CLEAN-ARCHITECTURE/01-oops/polymorphism/02_production_drill_multi_carrier_logistics_polymorphic_registry.md)
+   - Real-World Logistics Drill: Eliminating Scattered `switch(carrier)` statements.
+   - Complete Strategy + Self-Registering Dynamic Registry Implementation (FedEx, DHL, Delhivery).
+   - 100% OCP Extensibility Proof: Adding new carriers with 1 file and 0 edits to existing services.
+
 ---
 
 ## 🔗 Related Full System LLDs

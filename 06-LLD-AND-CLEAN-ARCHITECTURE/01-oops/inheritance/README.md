@@ -15,3 +15,8 @@ This module covers the architecture and mechanics of object reuse, coupling boun
    - Case Study 2: The Fragile Base-Class Problem (`CountingSet` double counting and v2.0 regression).
    - The Decorator/Forwarding Pattern with Composition.
    - The Two Golden Rules of Inheritance for Senior Engineers.
+
+2. [02_production_drill_http_client_combinatorial_explosion_decorator_pipeline.md](file:///Users/flixstock/Desktop/personal%20project/learn/06-LLD-AND-CLEAN-ARCHITECTURE/01-oops/inheritance/02_production_drill_http_client_combinatorial_explosion_decorator_pipeline.md)
+   - Real-World Fintech Drill: Combinatorial Class Explosion ($2^N$) & Fragile Base-Class Stack Overflow.
+   - Complete Decorator Pipeline Implementation (Auth, Retry, Rate Limiting, Logging, Network Socket).
+   - Fluent `HttpClientBuilder` for dynamic runtime assembly.

@@ -26,3 +26,8 @@ This module provides a complete first-principles curriculum on Encapsulation, St
    - Aggregate Boundaries (DDD consistency boundaries, Aggregate Root controlling child entities).
    - Safe Publication & JMM Memory Fences (`final` freeze semantics).
    - Pure Domain Models with Domain Events vs Infrastructure Injection.
+
+4. [04_production_drill_wallet_subscription_auto_renew_encapsulation.md](file:///Users/flixstock/Desktop/personal%20project/learn/06-LLD-AND-CLEAN-ARCHITECTURE/01-oops/encapsulation/04_production_drill_wallet_subscription_auto_renew_encapsulation.md)
+   - Real-World SDE-2 vs Tech Lead Architecture Comparison (Anemic Transaction Script vs Rich Domain).
+   - Complete `Money` Value Object, `Wallet`, and `Subscription` Self-Defending Entities.
+   - Solving Distributed Webhook Failures: Optimistic Locking (`version`) + Transactional Outbox.
