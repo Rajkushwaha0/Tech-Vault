@@ -7,3 +7,5 @@ This track covers distributed guarantees, message brokers (SQS, Kafka, RabbitMQ)
 ## 🧭 Topic Index
 
 * [01_distributed_guarantees_sqs_dual_write_and_idempotency.md](file:///Users/flixstock/Desktop/personal%20project/learn/03-DISTRIBUTED-SYSTEMS-AND-QUEUES/01_distributed_guarantees_sqs_dual_write_and_idempotency.md) — Distributed Guarantees: Solving the Dual-Write Problem with Transactional Outbox Pattern, SQS Visibility Timeout, Distributed Idempotency Keys, and Dead Letter Queues (DLQ).
+* [02_bloom_filter_architecture_mathematics_and_production_guide.md](file:///Users/flixstock/Desktop/personal%20project/learn/03-DISTRIBUTED-SYSTEMS-AND-QUEUES/02_bloom_filter_architecture_mathematics_and_production_guide.md) — Bloom Filter: Architecture, Mathematics & Production Mastery — The Zero False Negative Invariant, Memory Sizing Math, LSM-Tree Database Acceleration, Cuckoo Filter Alternatives, and TypeScript/Node.js Dual-Hashing Engine.
+
