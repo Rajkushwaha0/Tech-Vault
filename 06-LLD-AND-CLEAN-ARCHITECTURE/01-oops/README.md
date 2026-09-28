@@ -11,6 +11,7 @@ This module covers the core mental models of OOP: moving away from procedural co
 
 ### 📁 Core Fundamentals & Interview Mastery
 * [00_oop_core_fundamentals_interview_layman_guide.md](file:///Users/flixstock/Desktop/personal%20project/learn/06-LLD-AND-CLEAN-ARCHITECTURE/01-oops/00_oop_core_fundamentals_interview_layman_guide.md) — Class, Object, Constructor, Instantiation, Public/Private/Protected, and The 4 Pillars with Layman Analogies and Interview Scripts.
+* [00_runtime_keywords_new_this_final_static_java_vs_javascript.md](file:///Users/flixstock/Desktop/personal%20project/learn/06-LLD-AND-CLEAN-ARCHITECTURE/01-oops/00_runtime_keywords_new_this_final_static_java_vs_javascript.md) — Runtime Mechanics: `new`, `this`, `final`, `static`, `super`, and `instanceof` (Java JVM vs. JavaScript V8 Engine).
 
 ### 📁 [encapsulation/](file:///Users/flixstock/Desktop/personal%20project/learn/06-LLD-AND-CLEAN-ARCHITECTURE/01-oops/encapsulation)
 * [01_advanced_encapsulation_state_invariants_tell_dont_ask.md](file:///Users/flixstock/Desktop/personal%20project/learn/06-LLD-AND-CLEAN-ARCHITECTURE/01-oops/encapsulation/01_advanced_encapsulation_state_invariants_tell_dont_ask.md) — State Invariants, Tell Don't Ask, Value Objects vs Entities.
