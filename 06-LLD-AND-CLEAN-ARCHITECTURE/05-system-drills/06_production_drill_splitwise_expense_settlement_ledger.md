@@ -32,9 +32,9 @@ Design the low-level domain model and database schema for an expense-sharing and
      - **EXACT:** Exact custom amounts per user (e.g. Alice: \$25, Bob: \$35, Charlie: \$20, Dave: \$20).
      - **PERCENTAGE:** Split by percentage (summing to exactly $100.00\%$).
      - **SHARE:** Split by ratio/units (e.g. 2 shares vs 1 share).
-3. **The Core Financial Invariant:**
-   $$\sum \text{Paid Amounts} = \sum \text{Owed Amounts} = \text{Expense Total Amount}$$
-   - If any split is off by even 1 cent (\$0.01), the transaction must be rejected atomically.
+3. **The Core Financial Rule:**
+   `Total Money Paid = Total Money Owed = Total Expense Amount`
+   - If any split is off by even 1 cent ($0.01), the transaction is immediately rejected.
 4. **Debt Settlement & Balance Graph:**
    - A `Settlement` is a direct payment from User A to User B to clear accumulated debt.
    - The platform can compute **Net Balances** and run **Debt Simplification** (minimizing the total number of transactions required to settle up across a group).
@@ -228,15 +228,14 @@ classDiagram
 
 ## 🧮 Double-Entry Ledger & Debt Simplification Algorithm
 
-### 1. Calculating User Net Balances
-For any user $U$ within a group $G$:
+```text
+User's Net Balance = (Total money you paid for others) - (Total money you owe others)
+```
 
-$$\text{Net Balance}(U) = \sum \text{Paid Amounts by } U - \sum \text{Owed Amounts by } U + \sum \text{Settlements Paid by } U - \sum \text{Settlements Received by } U$$
-
-- **Positive Net Balance ($+B$):** The group owes this user money (Creditor).
-- **Negative Net Balance ($-B$):** This user owes the group money (Debtor).
-- **Zero Net Balance ($0$):** Fully settled up.
-- **Global Invariant:** Across the entire group, $\sum \text{Net Balances} = 0$.
+* **Positive balance (+):** The group owes you money (you are a Creditor).
+* **Negative balance (-):** You owe the group money (you are a Debtor).
+* **Zero balance (0):** You are completely settled up!
+* **Golden Rule:** In any group, the sum of all balances always equals zero (every dollar owed is a dollar to be received).
 
 ---
 

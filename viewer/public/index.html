@@ -1256,10 +1256,10 @@
 
           renderTree(fullTree, document.getElementById('treeContainer'), activeQuery, activeTag);
 
-          // Auto-select first document if available
-          const firstDoc = findFirstMarkdown(fullTree);
-          if (firstDoc && !currentFile) {
-            loadFile(firstDoc.path);
+          // Keep all side tabs / category folders closed on startup and refresh
+          const hashTarget = window.location.hash ? decodeURIComponent(window.location.hash.substring(1)) : null;
+          if (hashTarget && (!currentFile || forceRefresh)) {
+            loadFile(hashTarget, false);
           }
         }
       } catch (err) {
@@ -1422,9 +1422,7 @@
         container.appendChild(fragment);
       }
 
-      if (currentFile && !shouldAutoExpand) {
-        expandAncestorsOfFile(currentFile);
-      }
+      // All side tabs / folders remain closed by default on render
     }
 
     function formatDirectoryName(name) {
@@ -1436,9 +1434,14 @@
     }
 
     // Load and render file
-    async function loadFile(relPath) {
+    async function loadFile(relPath, autoExpand = false) {
       currentFile = relPath;
-      expandAncestorsOfFile(relPath);
+      if (window.location.hash !== '#' + encodeURIComponent(relPath)) {
+        history.replaceState(null, '', '#' + encodeURIComponent(relPath));
+      }
+      if (autoExpand) {
+        expandAncestorsOfFile(relPath);
+      }
       if (window.innerWidth <= 1024 && typeof closeSidebar === 'function') {
         closeSidebar();
       }

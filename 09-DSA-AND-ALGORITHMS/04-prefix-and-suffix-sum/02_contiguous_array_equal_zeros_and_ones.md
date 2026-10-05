@@ -54,8 +54,10 @@ Given a binary array `nums` consisting solely of `0`s and `1`s, return the **max
 ### 1. The Scale-Balancing Insight
 If you have three `1`s and three `0`s:
 - With original numbers: $1 + 1 + 1 + 0 + 0 + 0 = 3$. The sum doesn't tell you if it's equal (you could have three 1s and zero 0s, which also sums to 3).
-- **With transformation ($0 \rightarrow -1, 1 \rightarrow +1$):**
-$$(+1) + (+1) + (+1) + (-1) + (-1) + (-1) = \mathbf{0}$$
+- **With transformation (0 -> -1, 1 -> +1):**
+```text
+(+1) + (+1) + (+1) + (-1) + (-1) + (-1) = 0
+```
 
 Now, **every balanced subarray will sum to exactly zero**, and no unbalanced subarray can sum to zero.
 
@@ -77,12 +79,13 @@ Elevation
          Idx 1                      Idx 7
 ```
 
-**The Core Invariant:**
-- If your altitude at **Index 1** was **$+1$**, and later at **Index 7** your altitude is **still $+1$**:
-$$\text{Elevation}(7) - \text{Elevation}(1) = (+1) - (+1) = \mathbf{0}$$
+- If your altitude at **Index 1** was **+1**, and later at **Index 7** your altitude is **still +1**:
+```text
+Elevation(7) - Elevation(1) = (+1) - (+1) = 0
+```
 - That means between Index 2 and Index 7, **every step up was canceled by a step down**.
 - Therefore, the contiguous slice from **Index 2 to Index 7** has an **exact equal number of 0s and 1s**!
-- Length = $\text{Current Index} - \text{Earlier Index} = 7 - 1 = \mathbf{6}$.
+- Length = `Current Index - Earlier Index = 7 - 1 = 6`.
 
 ---
 
@@ -90,13 +93,13 @@ $$\text{Elevation}(7) - \text{Elevation}(1) = (+1) - (+1) = \mathbf{0}$$
 
 ### 1. What does the Hash Map Store?
 To find the **longest** subarray, we want the earliest possible start:
-- **Map Key:** `running_sum` (the current elevation).
-- **Map Value:** `first_seen_index` (the **very first index** where this elevation was reached).
+* **Map Key:** `running_sum` (the current elevation).
+* **Map Value:** `first_seen_index` (the **very first index** where this elevation was reached).
 
 > [!IMPORTANT]
 > **Never overwrite an existing key in the Map!**  
 > If an elevation appears again at a later index, keeping the earliest recorded index maximizes the distance:
-> $$\text{Length} = \text{current\_index} - \text{map}[\text{running\_sum}]$$
+> `Length = current_index - map[running_sum]`
 
 ---
 

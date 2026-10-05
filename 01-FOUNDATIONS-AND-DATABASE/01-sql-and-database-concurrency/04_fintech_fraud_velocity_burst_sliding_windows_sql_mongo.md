@@ -105,8 +105,10 @@ AVG(amount) OVER (
     ROWS 3 PRECEDING
 )
 ```
-*Why this fails:* When you write `ROWS 3 PRECEDING`, SQL expands this to `ROWS BETWEEN 3 PRECEDING AND CURRENT ROW`. The current spike (e.g. $500) will be added to the average:
-$$\text{AVG} = \frac{50 + 60 + 40 + 500}{4} = \$162.50$$
+*Why this fails:* When you write `ROWS 3 PRECEDING`, SQL secretly includes the current row (`ROWS BETWEEN 3 PRECEDING AND CURRENT ROW`). The current spike ($500) will be added into the average calculation:
+```text
+Average = (50 + 60 + 40 + 500) ÷ 4 = $162.50
+```
 This inflates the baseline and suppresses the alert! You must explicitly exclude the current row:
 ```sql
 ROWS BETWEEN 3 PRECEDING AND 1 PRECEDING

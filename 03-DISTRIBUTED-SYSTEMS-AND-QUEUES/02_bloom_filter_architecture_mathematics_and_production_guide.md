@@ -141,33 +141,33 @@ To support element deletion, distributed systems use **Counting Bloom Filters** 
 
 ---
 
-## Chapter 5: Mathematical Foundations: Sizing & False Positive Probability
+## Chapter 5: Sizing & Memory: The Senior Engineer's Rule of Thumb
 
-Given:
-- $n$ = Number of expected elements.
-- $p$ = Desired false positive probability (e.g., $0.01 = 1\%$).
+In production and interviews, nobody expects you to derive complex natural logarithm formulas on a whiteboard. Instead, senior engineers use a simple, battle-tested **Rule of Thumb**:
 
-### 1. Optimal Bit Array Size ($m$):
+### 🎯 The "10 Bits & 7 Hashes" Rule (For a 1% False Positive Rate)
+
+If you want a **1% error rate** (99% of non-existent queries are stopped instantly):
+* **Memory Needed:** You need approximately **10 bits per item** ($~1.2$ bytes).
+* **Hash Functions Needed:** You need approximately **7 hash functions**.
+
+#### Concrete Example: 1,000,000 Items
 ```text
-m = - (n * ln(p)) / (ln(2)^2) ≈ -1.44 * n * log2(p)
-```
-
-### 2. Optimal Number of Hash Functions ($k$):
-```text
-k = (m / n) * ln(2) ≈ 0.7 * (m / n)
+1,000,000 items × 10 bits = 10,000,000 bits
+10,000,000 bits ÷ 8 = 1,250,000 bytes ≈ 1.19 MB of RAM!
 ```
 
 ---
 
-### 📊 Real-World Scale Comparison: 1,000,000 Elements ($p = 1\%$)
+### 📊 Real-World Scale Comparison: 1,000,000 Elements (1% Error Rate)
 
 | Data Structure | Memory Required | Lookup Speed | Deletion Support |
 | :--- | :--- | :--- | :--- |
-| **Java / V8 `HashSet<String>`** | **~48 to 80 MB** | $O(1)$ | Yes |
-| **Redis `SADD` Set** | **~65 MB** | $O(1)$ (+ network hop) | Yes |
-| **Bloom Filter** | **1.19 MB** | **$O(k)$ in CPU cache** | No |
+| **Node.js / Java `Set<String>`** | **~50 to 80 MB** | Instant (In RAM) | Yes |
+| **Redis `SADD` Set** | **~65 MB** | Network hop (1-2 ms) | Yes |
+| **Bloom Filter** | **1.19 MB** | **Instant (CPU Cache)** | No |
 
-*(A Bloom Filter requires only **~9.6 bits per element** for a 1% false positive rate).*
+*(A Bloom Filter gives you a **98% memory savings**, allowing you to hold hundreds of millions of keys directly in local RAM!)*
 
 ---
 

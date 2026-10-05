@@ -62,7 +62,9 @@ flowchart TD
 ## 🧮 PART 3: Step-by-Step Prefix Sum Dry Run: *Subarray Sum Equals K*
 
 ### The Core Equation:
-$$\text{Current Running Sum} - \text{Target } K = \text{Needed Prefix Sum}$$
+```text
+Current Running Sum - Target K = Needed Prefix Sum
+```
 
 If that `Needed Prefix Sum` was observed previously, then every time it was observed marks the start of a valid subarray ending at the current index.
 

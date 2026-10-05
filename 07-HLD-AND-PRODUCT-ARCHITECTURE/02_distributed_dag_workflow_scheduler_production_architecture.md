@@ -65,10 +65,11 @@ timeline
 3. **Day 40 (Cyclic Deadlock)**:
    - An operator modifies a workflow config: Task A $\rightarrow$ Task B $\rightarrow$ Task C $\rightarrow$ Task A.
    - Every task waits forever. No alerts fire, no errors throw — only complete silence.
-4. **Day 60 (The Full-Graph Scan Meltdown)**:
-   - Scale grows to 40,000 active tasks. The control plane runs what felt obvious on Day 1:
-     $$\text{Every second} \longrightarrow \text{Query DB for waiting tasks} \longrightarrow \text{Check dependencies} \longrightarrow \text{Repeat}$$
-   - CPU sits at 100%. MongoDB connection pools exhaust and melt down. The platform halts completely because the control plane scanned the universe every tick.
+    - Scale grows to 40,000 active tasks. The control plane runs what felt obvious on Day 1:
+      ```text
+      Every second ──> Query DB for waiting tasks ──> Check dependencies ──> Repeat
+      ```
+    - CPU sits at 100%. MongoDB connection pools exhaust and melt down. The platform halts completely because the control plane scanned the universe every tick.
 
 ---
 
@@ -249,17 +250,18 @@ flowchart LR
 
 ---
 
-## 📊 PART 7: Capacity Planning & Little's Law (1M Tasks/Day)
+## 📊 PART 7: Capacity Planning (1 Million Tasks/Day)
 
-### The Production Math
-- **Throughput ($X$)**:
-  $$\frac{1,000,000 \text{ tasks}}{86,400 \text{ seconds}} \approx 11.6 \text{ tasks/sec average} \quad (\approx 116 \text{ tasks/sec at } 10\times \text{ burst})$$
-- **Average Task Duration ($W$)**: 120 seconds (typical for AI image/video generation).
-- **Concurrency ($L$) via Little's Law ($L = \lambda \times W$)**:
-  $$L_{\text{average}} = 11.6 \times 120 \approx \mathbf{1,392 \text{ concurrent workers}}$$
-  $$L_{\text{burst}} = 116 \times 120 \approx \mathbf{13,920 \text{ concurrent workers}}$$
+### The Production Math:
+* **Throughput:**
+  `1,000,000 tasks ÷ 86,400 seconds in a day ≈ 12 tasks/second average`  
+  *(During a 10x traffic spike, this reaches ~120 tasks/second).*
+* **Average Task Duration:** 120 seconds (2 minutes, typical for AI model inference or video processing).
+* **Concurrent Workers Needed (Little's Law: Concurrency = Arrival Rate × Task Duration):**
+  * **Normal Load:** `11.6 tasks/sec × 120 seconds ≈ 1,400 concurrent workers`
+  * **Peak Surge:** `116 tasks/sec × 120 seconds ≈ 14,000 concurrent workers`
 
-> **Key Takeaway**: At 14,000 concurrent tasks, scanning the database to find ready work will instantly destroy any database. Event-driven parent-to-child wakeups with indexed ready queues are the **only** path to survivability.
+> **Key Takeaway**: At 14,000 concurrent tasks, polling or scanning the database to find ready work will instantly destroy any database. Event-driven parent-to-child wakeups with indexed ready queues are the **only** path to survivability.
 
 ---
 

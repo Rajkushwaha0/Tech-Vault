@@ -32,3 +32,8 @@ This module contains end-to-end Low-Level Design (LLD) solutions, interview fram
    - Real-World Drill: Peer-to-Peer Expense Sharing & Debt Settlement Engine (Splitwise / Venmo).
    - Multi-Payer vs. Multi-Debtor Double-Entry Invariants, Aggregate Root Validation, and Greedy Debt Simplification Algorithm.
    - Complete Normalized 3NF Postgres DDL and TypeScript Domain Model.
+
+7. [07_production_drill_online_assessment_and_examination_engine.md](file:///Users/flixstock/Desktop/personal%20project/learn/06-LLD-AND-CLEAN-ARCHITECTURE/05-system-drills/07_production_drill_online_assessment_and_examination_engine.md)
+   - Real-World Drill: Online Assessment & Examination Engine (HackerRank / LeetCode Contests).
+   - Candidate Mistake Breakdown (Cardinality Inversions, Death Test Traps, Aggregate Root Ownership).
+   - Legal Immutability, Snapshot Isolation Patterns, Full 3NF Postgres DDL, and UML Class Diagram.

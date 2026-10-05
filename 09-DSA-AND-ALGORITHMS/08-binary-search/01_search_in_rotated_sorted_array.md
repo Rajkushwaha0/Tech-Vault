@@ -75,8 +75,10 @@ Output: -1
 
 ### The Bottleneck & Optimization ($O(\log N)$)
 * Traditional binary search assumes the entire search space is monotonic.
-* Here, monotonicity is broken at the rotation point. However, because **one half is always sorted**, we can check whether `target` falls inside the clean sorted half using simple boundary inequalities:
-  $$\text{Is } \text{nums}[\text{low}] \le \text{target} < \text{nums}[\text{mid}] \text{ ?}$$
+* Here, monotonicity is broken at the rotation point. However, because **one half is always sorted**, we can check whether `target` falls inside the clean sorted half using a simple check:
+  ```text
+  Is nums[low] <= target < nums[mid] ?
+  ```
 * If yes $\rightarrow$ search only in the left half (`high = mid - 1`).
 * If no $\rightarrow$ discard the left half entirely and search in the right half (`low = mid + 1`).
 

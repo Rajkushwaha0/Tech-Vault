@@ -89,7 +89,9 @@ flowchart TD
 - Load per pod = $3,500\text{ RPS} \div 10\text{ pods} = \mathbf{350\text{ RPS per pod}}$.
 - Each request executes a $20\text{ ms}$ synchronous coupon algorithm on the main thread:
 
-$$\text{Required CPU time per second} = 350 \times 20\text{ ms} = 7,000\text{ ms of work every 1 second!}$$
+```text
+Required CPU time = 350 requests × 20 ms = 7,000 ms of work needed every 1 second!
+```
 
 Because a single thread can only deliver $1,000\text{ ms}$ of work per second:
 1. Every second of real-world time accumulates a **6-second backlog**.
@@ -187,8 +189,9 @@ Instead of executing steps sequentially ($60\text{ ms I/O} + 20\text{ ms CPU} + 
 2. The main thread simultaneously:
    - Dispatches the 4 external API calls (I/O Fan-out).
    - Offloads the coupon math to a background worker thread.
-3. Total processing latency drops to:
-   $$\text{Total Latency} = \max(\text{Slowest I/O [60ms]}, \text{Worker CPU [20ms]}) + \text{DB Write [15ms]} = \mathbf{75\text{ ms}}$$
+3. Total processing latency drops from 95 ms to **75 ms**:
+   * *Before:* 60 ms (I/O) + 20 ms (CPU) + 15 ms (DB) = **95 ms**
+   * *After (Parallel):* The 20 ms CPU work runs *at the same time* as the 60 ms I/O calls! So total time is just `60 ms + 15 ms DB write = 75 ms`.
 
 ### Layer 4: Liveness Protection & Early Backpressure
 * Because CPU computation is isolated from the main thread, event loop lag remains **$< 2\text{ ms}$**, and `/healthz` responds instantly.
